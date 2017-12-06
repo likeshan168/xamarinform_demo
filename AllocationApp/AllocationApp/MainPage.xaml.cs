@@ -24,7 +24,6 @@ namespace AllocationApp
                 CallButton.IsEnabled = false;
                 CallButton.Text = "Call";
             }
-            throw new Exception("just for testing app center");
         }
 
         async void OnCall(object sender, EventArgs e)
