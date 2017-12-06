@@ -2,6 +2,7 @@
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Distribute;
 using Xamarin.Forms.Xaml;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
@@ -26,6 +27,7 @@ namespace AllocationApp
             //AppCenter.Start("android=70d8deae-b1cb-4e7e-a30a-2890540858b7;" + "uwp={Your UWP App secret here};" +
             //                "ios={Your iOS App secret here}",
             //    typeof(Analytics), typeof(Crashes));
+            AppCenter.Start("android=70d8deae-b1cb-4e7e-a30a-2890540858b7", typeof(Distribute));
         }
 
         protected override void OnSleep()

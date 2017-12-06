@@ -70,6 +70,12 @@
     <Reference Include="Microsoft.AppCenter.Crashes.Android.Bindings, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AppCenter.Crashes.1.0.1\lib\MonoAndroid403\Microsoft.AppCenter.Crashes.Android.Bindings.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AppCenter.Distribute, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AppCenter.Distribute.1.0.1\lib\MonoAndroid403\Microsoft.AppCenter.Distribute.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AppCenter.Distribute.Android.Bindings, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AppCenter.Distribute.1.0.1\lib\MonoAndroid403\Microsoft.AppCenter.Distribute.Android.Bindings.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />

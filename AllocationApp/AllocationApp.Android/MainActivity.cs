@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Distribute;
 
 namespace AllocationApp.Droid
 {
@@ -21,6 +23,8 @@ namespace AllocationApp.Droid
 
             Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
+
+            AppCenter.Start("70d8deae-b1cb-4e7e-a30a-2890540858b7", typeof(Distribute));
         }
     }
 }

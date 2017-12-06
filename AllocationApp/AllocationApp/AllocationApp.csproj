@@ -78,6 +78,9 @@
     <Reference Include="Microsoft.AppCenter.Crashes, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AppCenter.Crashes.1.0.1\lib\portable-net45+win8+wpa81+wp8\Microsoft.AppCenter.Crashes.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AppCenter.Distribute, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AppCenter.Distribute.1.0.1\lib\portable-net45+win8+wpa81+wp8\Microsoft.AppCenter.Distribute.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Forms.2.5.0.91635\lib\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.Core.dll</HintPath>
     </Reference>
