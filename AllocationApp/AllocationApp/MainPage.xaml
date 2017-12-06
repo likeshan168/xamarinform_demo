@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                   x:Class="AllocationApp.MainPage"
+             Title="Call Phone">
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness">
+            <On Platform="iOS" Value="20, 40, 20, 20" />
+            <On Platform="Android, WinPhone, Windows" Value="20" />
+        </OnPlatform>
+    </ContentPage.Padding>
+    <StackLayout Padding="60" VerticalOptions="Center">
+        <Label Text="Enter a Phoneword:" />
+        <Entry x:Name="PhoneNumberText" Text="1-855-XAMARIN" />
+        <Button x:Name="TranslateButon" Text="Translate" Clicked="OnTranslate" />
+        <Button x:Name="CallButton" Text="Call" IsEnabled="false" Clicked="OnCall" />
+        <Button x:Name="CallHistoryButton" Text="Call History" IsEnabled="false"
+                Clicked="OnCallHistory" />
+        <Button x:Name="NavigateToSecondPage" Clicked="NavigateToSecondPage_Clicked" Text="Navigate to second page"></Button>
+    </StackLayout>
+</ContentPage>
