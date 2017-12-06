@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:AllocationApp;assembly=AllocationApp"
              x:Class="AllocationApp.CallHistoryPage"
-             Title="Call History">
+             Title="拨打历史">
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness">
             <On Platform="iOS" Value="20, 40, 20, 20" />
