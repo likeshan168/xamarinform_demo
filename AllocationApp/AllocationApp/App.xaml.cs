@@ -3,6 +3,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Distribute;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
@@ -11,12 +12,23 @@ namespace AllocationApp
     public partial class App
     {
         public static IList<string> PhoneNumbers { get; set; }
+        public static bool IsUserLoggedIn { get; set; }
+
+        public static RestServiceManager ServiceManager { get; private set; }
         public App()
         {
             InitializeComponent();
             PhoneNumbers = new List<string>();
-            //MainPage = new NavigationPage(new MainPage());
-            MainPage = new TabbedPage();
+            ServiceManager = new RestServiceManager(new RestService());
+            if (IsUserLoggedIn)
+            {
+                MainPage = new NavigationPage(new AllotPage());
+            }
+            else
+            {
+                MainPage = new NavigationPage(new LoginPage());
+            }
+            //MainPage = new TabbedPage();
         }
 
         protected override void OnStart()
