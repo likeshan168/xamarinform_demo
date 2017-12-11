@@ -41,11 +41,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Behaviors\BehaviorBase.cs" />
+    <Compile Include="Behaviors\EventToCommandBehavior.cs" />
     <Compile Include="CallHistoryPage.xaml.cs">
       <DependentUpon>CallHistoryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="Controls\SelectableEntry.cs" />
     <Compile Include="Data\RestServiceManager.cs" />
+    <Compile Include="Helpers\CommonEqualityComparer.cs" />
+    <Compile Include="Helpers\DistinctExtensions.cs" />
     <Compile Include="IDialer.cs" />
     <Compile Include="Data\IRestService.cs" />
     <Compile Include="ListViewPage.xaml.cs">
@@ -58,6 +63,7 @@
     <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\StateKind.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="StatekindBoolConverter.cs" />
     <Compile Include="ViewModels\AllotViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -74,6 +80,7 @@
     <Compile Include="TabbedPage.xaml.cs">
       <DependentUpon>TabbedPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainPage.xaml">
@@ -160,6 +167,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.2.5.0.91635\build\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.2.5.0.91635\build\portable-win+net45+wp80+win81+wpa81\Xamarin.Forms.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

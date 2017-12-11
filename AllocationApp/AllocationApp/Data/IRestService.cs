@@ -9,8 +9,10 @@ namespace AllocationApp
 {
     public interface IRestService
     {
-        Task<LoginResponse> LoginAsync(User user);
+        Task<ServiceResponse> LoginAsync(User user);
 
         Task<List<AllocationData>> GetListAsync();
+
+        Task<ServiceResponse> UpdateDataAsync(IList<AllocationData> allocations);
     }
 }

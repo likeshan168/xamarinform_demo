@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AllocationApp.Annotations;
 using AllocationApp.Models;
+using AllocationApp.ViewModels;
 using Xamarin.Forms;
 
 namespace AllocationApp
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel : ViewModelBase
     {
         private string message = string.Empty;
         private bool isRunning = false;
@@ -79,14 +80,6 @@ namespace AllocationApp
 
         public ICommand LoginCommand { protected set; get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         //async Task LoginAsync()
         //{
         //    await Task.Run(() => ValidateLoginAsync());
@@ -103,14 +96,15 @@ namespace AllocationApp
                     //await Application.Current.MainPage.DisplayAlert("Login", "Login Successfully", "OK");
                     App.IsUserLoggedIn = true;
                     //以下两行代码就是导航到主页
-                    //var mainPage = Application.Current.MainPage;
-                    //mainPage.Navigation.InsertPageBefore(new AllotPage(), mainPage);
-                    //await mainPage.Navigation.PopAsync();
+                    //var currentPage = Application.Current.MainPage;
+                    //currentPage.Navigation.InsertPageBefore(new AllotPage(), currentPage);
+                    //await currentPage.Navigation.PopAsync();
                     await Application.Current.MainPage.Navigation.PushAsync(new AllotPage());
                 }
                 else
                 {
                     Password = string.Empty;
+                    Message = "用户名或密码不对";
                 }
 
                 IsRunning = false;
@@ -131,7 +125,7 @@ namespace AllocationApp
             }
             //TODO: call web serivce to verify the user login
 
-            LoginResponse response =
+            ServiceResponse response =
                 await App.ServiceManager.LoginAsync(new User { UserName = UserName, Password = Password });
 
             Message = response.Result;

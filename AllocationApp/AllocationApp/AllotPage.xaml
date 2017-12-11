@@ -2,6 +2,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:AllocationApp.ViewModels;assembly=AllocationApp"
+             xmlns:allocationApp="clr-namespace:AllocationApp;assembly=AllocationApp"
+             xmlns:behaviors="clr-namespace:AllocationApp.Behaviors;assembly=AllocationApp"
+             xmlns:controls="clr-namespace:AllocationApp.Controls;assembly=AllocationApp"
              x:Class="AllocationApp.AllotPage"
              Title="盘点">
     <ContentPage.ToolbarItems>
@@ -10,18 +13,78 @@
     <ContentPage.BindingContext>
         <viewModels:AllotViewModel/>
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <allocationApp:StatekindBoolConverter x:Key="cvt"></allocationApp:StatekindBoolConverter>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <ActivityIndicator IsRunning="{Binding IsRunning}" Color="Red"/>
-            <Button Text="加载数据" Command="{Binding LoadDataCommand}"></Button>
-            <ListView x:Name="list" SeparatorColor="Green" ItemsSource="{Binding Allots}">
+            <ActivityIndicator IsRunning="{Binding IsUpdating}" IsVisible="{Binding IsUpdating}" Color="Red"/>
+            
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Count, StringFormat='下拉刷新，当前数据条数：{0}'}"></Label>
+                <Label Text="{Binding ScanedCount, StringFormat='已扫条数：{0}'}"></Label>
+                <Image Source="showall.png">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding ShowAllData}"  />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Source="reset.png">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding ResetData}"  />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Source="update.png">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding UpdateData}"  />
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+            <Picker Title="选择主单号" ItemsSource="{Binding MasterAwbs}" SelectedItem="{Binding SelectedMasterAwb}"/>
+            <controls:SelectableEntry Placeholder="扫分单号" Text="{Binding SubNo}">
+                <Entry.Behaviors>
+                    <behaviors:EventToCommandBehavior EventName="Completed"  Command="{Binding SubNoKeyEnterCommand}"></behaviors:EventToCommandBehavior>
+                </Entry.Behaviors>
+            </controls:SelectableEntry>
+            <ListView x:Name="list" SeparatorColor="Green" Margin="5" IsRefreshing="{Binding IsRunning}" ItemsSource="{Binding Allots}" IsPullToRefreshEnabled="True" RefreshCommand="{Binding LoadDataCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout BackgroundColor="#eee"
-                                     Orientation="Vertical" Padding="20">
-                                <Label Text="{Binding MasterAwb}" TextColor="#f35e20" ></Label>
-                                <Label Text="{Binding SubAwb}" TextColor="#503026" ></Label>
+                            <StackLayout BackgroundColor="#eee" Orientation="Horizontal">
+                                <Image VerticalOptions="Start" Source="{Binding IsChecked, Converter={StaticResource cvt}}">
+                                </Image>
+                                <Label Text="{Binding SubAwb, StringFormat='分运单号：{0}'}"></Label>
+                                <Label Text="{Binding Description,StringFormat='品名：{0}'}"></Label>
+                                <Label Text="{Binding Amount, StringFormat='数量：{0}'}"></Label>
+                                <!--<StackLayout Orientation="Vertical">
+                                    <Image Source="{Binding IsChecked, Converter={StaticResource cvt}}">
+                                    </Image>
+                                </StackLayout>
+                                <StackLayout Orientation="Vertical">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="分运单号：" ></Label>
+                                        <Label Text="{Binding SubAwb}" TextColor="#f35e20" ></Label>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="航班号：" ></Label>
+                                        <Label Text="{Binding Flight}"></Label>
+                                    </StackLayout>
+                                </StackLayout>
+                                <StackLayout Orientation="Vertical">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="品名：" ></Label>
+                                        <Label Text="{Binding Description}"></Label>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="数量："></Label>
+                                        <Label Text="{Binding Amount}"></Label>
+                                    </StackLayout>
+                                </StackLayout>-->
+
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

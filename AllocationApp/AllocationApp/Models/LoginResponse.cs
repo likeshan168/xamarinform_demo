@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AllocationApp.Models
 {
-    public class LoginResponse
+    public class ServiceResponse
     {
         public string Result { get; set; }
         public bool IsSuccess { get; set; }

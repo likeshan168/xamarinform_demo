@@ -20,9 +20,9 @@ namespace AllocationApp
             //httpClient.DefaultRequestHeaders.Add("httpClient")
             //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
         }
-        public async Task<LoginResponse> LoginAsync(User user)
+        public async Task<ServiceResponse> LoginAsync(User user)
         {
-            LoginResponse loginResponse = new LoginResponse();
+            ServiceResponse serviceResponse = new ServiceResponse();
             var uri = new Uri(string.Format(Constants.LoginUrl, string.Empty));
 
             try
@@ -32,19 +32,19 @@ namespace AllocationApp
                 var response = await httpClient.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    loginResponse = await response.Content.ReadAsAsync<LoginResponse>();
+                    serviceResponse = await response.Content.ReadAsAsync<ServiceResponse>();
                     //JavaScriptSerializer JSserializer = new JavaScriptSerializer();
                     //loginResponse = JsonConvert.DeserializeObject<LoginResponse>(result);
                 }
 
-                return loginResponse;
+                return serviceResponse;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Login Error:{ex.Message}");
-                loginResponse.IsSuccess = false;
-                loginResponse.Result = "登录发生异常";
-                return loginResponse;
+                serviceResponse.IsSuccess = false;
+                serviceResponse.Result = "登录发生异常";
+                return serviceResponse;
             }
         }
 
@@ -66,6 +66,32 @@ namespace AllocationApp
             {
                 Debug.WriteLine($"Login Error:{ex.Message}");
                 return list;
+            }
+        }
+
+        public async Task<ServiceResponse> UpdateDataAsync(IList<AllocationData> allocations)
+        {
+            ServiceResponse serviceResponse = new ServiceResponse();
+            var uri = new Uri(string.Format(Constants.LoginUrl, string.Empty));
+
+            try
+            {
+                var json = JsonConvert.SerializeObject(allocations);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await httpClient.PutAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    serviceResponse = await response.Content.ReadAsAsync<ServiceResponse>();
+                }
+
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Login Error:{ex.Message}");
+                serviceResponse.IsSuccess = false;
+                serviceResponse.Result = "更新发生异常";
+                return serviceResponse;
             }
         }
     }

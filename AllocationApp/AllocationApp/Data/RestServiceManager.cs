@@ -16,7 +16,7 @@ namespace AllocationApp
             restService = service;
         }
 
-        public Task<LoginResponse> LoginAsync(User user)
+        public Task<ServiceResponse> LoginAsync(User user)
         {
             return restService.LoginAsync(user);
         }
@@ -24,6 +24,11 @@ namespace AllocationApp
         public Task<List<AllocationData>> GetListAsync()
         {
             return restService.GetListAsync();
+        }
+
+        public Task<ServiceResponse> UpdateDataAsync(IList<AllocationData> allocations)
+        {
+            return restService.UpdateDataAsync(allocations);
         }
     }
 }

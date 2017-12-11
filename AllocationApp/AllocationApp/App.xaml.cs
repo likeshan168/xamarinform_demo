@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AllocationApp.Models;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -12,9 +13,12 @@ namespace AllocationApp
     public partial class App
     {
         public static IList<string> PhoneNumbers { get; set; }
+
         public static bool IsUserLoggedIn { get; set; }
 
         public static RestServiceManager ServiceManager { get; private set; }
+
+        public static IList<AllocationData> Allocations = new List<AllocationData>();
         public App()
         {
             InitializeComponent();
