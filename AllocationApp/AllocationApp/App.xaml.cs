@@ -17,8 +17,10 @@ namespace AllocationApp
         public static bool IsUserLoggedIn { get; set; }
 
         public static RestServiceManager ServiceManager { get; private set; }
-
+        //这个是保存所有的数据，用来展示所有数据的
         public static IList<AllocationData> Allocations = new List<AllocationData>();
+        //这个是保存盘点过的数据（包括存在的和不存在的）,这个是用来同步到服务器
+        public static Stack<AllocationData> CheckedAllocations = new Stack<AllocationData>();
         public App()
         {
             InitializeComponent();

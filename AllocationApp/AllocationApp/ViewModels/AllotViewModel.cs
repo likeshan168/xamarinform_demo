@@ -27,8 +27,42 @@ namespace AllocationApp.ViewModels
             SubNoKeyEnterCommand = new Command(async () => await SearchDataAsync());
             ShowAllData = new Command(() => ShowAllDataAsync());
             UpdateData = new Command(async () => await UpdateDataAsync());
-            ResetData = new Command(async () => await GetDataAsync());
+            ResetData = new Command(async () => await ResetDataAsync());
             Logout = new Command(async () => await LogoutAsync());
+        }
+
+        private async Task ResetDataAsync()
+        {
+            //恢复到上一步
+            if (ScanedCount > 0)
+            {
+                if (await Application.Current.MainPage.DisplayAlert("提示", "确定要恢复至上一步吗", "确定", "取消"))
+                {
+                    ScanedCount = ScanedCount - 1;
+                    //取最上面的一个进行恢复
+                    if (App.CheckedAllocations.Count > 0)
+                    {
+                        var item = App.CheckedAllocations.Pop();
+                        if (item.IsChecked == StateKind.Checked)
+                        {
+                            App.Allocations.First(p => p.MasterAwb == item.MasterAwb && p.SubAwb == item.SubAwb)
+                                .IsChecked = StateKind.NoChecked;
+                            Allots.First(p => p.MasterAwb == item.MasterAwb && p.SubAwb == item.SubAwb)
+                                .IsChecked = StateKind.NoChecked;
+                        }
+                        else if (item.IsChecked == StateKind.OverChecked)
+                        {
+                            App.Allocations.Remove(item);
+                            Allots.Remove(item);
+                        }
+                        await Application.Current.MainPage.DisplayAlert("提示", "已经恢复至上一步", "确定");
+                    }
+                }
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("提示", "已经恢复至初始状态", "确定");
+            }
         }
 
         private async Task LogoutAsync()
@@ -58,6 +92,8 @@ namespace AllocationApp.ViewModels
             {
                 //保存成功之后清零
                 ScanedCount = 0;
+                App.CheckedAllocations.Clear();
+                SelectedMasterAwb = string.Empty;
             }
             IsUpdating = false;
             await Application.Current.MainPage.DisplayAlert("提示", response.Result, "确定");
@@ -65,7 +101,7 @@ namespace AllocationApp.ViewModels
 
         public async Task<ServiceResponse> UpdateDataToServerAsync()
         {
-            return await App.ServiceManager.UpdateDataAsync(App.Allocations);
+            return await App.ServiceManager.UpdateDataAsync(App.CheckedAllocations.ToList());
         }
 
 
@@ -85,48 +121,76 @@ namespace AllocationApp.ViewModels
         private async Task SearchDataAsync()
         {
 
-            if (string.IsNullOrWhiteSpace(SubNo))
-                return;
-            if (string.IsNullOrWhiteSpace(SelectedMasterAwb))
-                await Application.Current.MainPage.DisplayAlert("提示", "选择主单号", "确定");
-
-            var rst = App.Allocations.Where(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo);
-            var enumerable = rst as AllocationData[] ?? rst.ToArray();
-            if (enumerable.Any())
+            try
             {
-                Allots.Clear();
+                if (string.IsNullOrWhiteSpace(SubNo))
+                    return;
+                if (string.IsNullOrWhiteSpace(SelectedMasterAwb))
+                    await Application.Current.MainPage.DisplayAlert("提示", "选择主单号", "确定");
 
-                foreach (var item in enumerable)
+                var rst = App.Allocations.Where(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo);
+                var enumerable = rst as AllocationData[] ?? rst.ToArray();
+                if (enumerable.Any())
                 {
-                    item.IsChecked = StateKind.Checked;
-                    //更新缓存中的数据，因为需要同步到服务器上
-                    App.Allocations.First(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo).IsChecked =
-                        StateKind.Checked;
-                    Allots.Add(item);
-                    ScanedCount = ScanedCount + 1;
-                }
-            }
-            else
-            {
-                //新增
-                if (await Application.Current.MainPage.DisplayAlert("提示", "是否标记为溢装到货", "确定", "取消"))
-                {
-                    Allots.Clear();
-                    var newItem = new AllocationData
+                    var firstItem = enumerable.First();
+                    // 如果已经盘点过就不要再进行盘点
+                    if (firstItem.IsChecked != StateKind.Checked)
                     {
-                        IsChecked = StateKind.OverChecked,
-                        MasterAwb = SelectedMasterAwb,
-                        SubAwb = SubNo,
-                        Amount = 1
-                    };
-                    allots.Add(newItem);
-                    Count = allots.Count;
-                    App.Allocations.Add(newItem);
-                    ScanedCount = ScanedCount + 1;
+                        //清理
+                        Allots.Clear();
+                        firstItem.IsChecked = StateKind.Checked;
+
+                        App.Allocations.First(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo).IsChecked =
+                            StateKind.Checked;
+                        //更新缓存中的数据，因为需要同步到服务器上
+                        //App.CheckedAllocations.First(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo).IsChecked =
+                        //    StateKind.Checked;
+                        if (App.CheckedAllocations.Contains(firstItem))
+                        {
+                            foreach (var data in App.CheckedAllocations)
+                            {
+                                if (data.MasterAwb == SelectedMasterAwb && data.SubAwb == SubNo)
+                                {
+                                    data.IsChecked = StateKind.Checked;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            App.CheckedAllocations.Push(firstItem);
+                        }
+                        Allots.Add(firstItem);
+                        ScanedCount = ScanedCount + 1;
+                        Count = Allots.Count;
+                    }
                 }
+                else
+                {
+                    //新增
+                    if (await Application.Current.MainPage.DisplayAlert("提示", "是否标记为溢装到货", "确定", "取消"))
+                    {
+                        Allots.Clear();
+                        var newItem = new AllocationData
+                        {
+                            IsChecked = StateKind.OverChecked,
+                            MasterAwb = SelectedMasterAwb,
+                            SubAwb = SubNo,
+                            Amount = 1
+                        };
+                        Allots.Add(newItem);
+                        Count = allots.Count;
+                        App.Allocations.Add(newItem);
+                        App.CheckedAllocations.Push(newItem);
+                        ScanedCount = ScanedCount + 1;
+                    }
+                }
+                //TODO: 需要找到扫码完成之后选中文本
+                SubNo = string.Empty;
             }
-            //TODO: 需要找到扫码完成之后选中文本
-            SubNo = string.Empty;
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("提示", $"盘点出错:{ex.Message}", "确定");
+            }
         }
 
         private async Task GetDataAsync()
@@ -150,6 +214,7 @@ namespace AllocationApp.ViewModels
             IsRunning = false;
             Count = allots.Count;
             ScanedCount = 0;
+            SelectedMasterAwb = string.Empty;
             MasterAwbs = allots.Distinct(p => p.MasterAwb).Select(p => p.MasterAwb).ToList();
             await Application.Current.MainPage.DisplayAlert("提示", "获取数据成功", "确定");
         }
@@ -243,18 +308,19 @@ namespace AllocationApp.ViewModels
             {
                 if (selectedMasterAwb != null && value != null && selectedMasterAwb != value)
                 {
-                    selectedMasterAwb = value;
-                    var rst = App.Allocations.Where(p => p.MasterAwb == selectedMasterAwb);
+                    var rst = App.Allocations.Where(p => p.MasterAwb == value);
                     var enumerable = rst as AllocationData[] ?? rst.ToArray();
                     if (enumerable.Any())
                     {
                         Allots.Clear();
+                        foreach (var item in enumerable)
+                        {
+                            Allots.Add(item);
+                        }
+                        Count = Allots.Count;
                     }
-                    foreach (var item in enumerable)
-                    {
-                        Allots.Add(item);
-                    }
-                    Count = Allots.Count;
+
+                    selectedMasterAwb = value;
                     OnPropertyChanged();
                 }
             }

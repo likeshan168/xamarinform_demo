@@ -114,7 +114,7 @@ namespace AllocationApp.Behaviors
 
             if (Command.CanExecute(null))
             {
-                //((Entry)sender).Focus();
+                ((Entry)sender).Focus();
                 Command.Execute(null);
             }
         }
