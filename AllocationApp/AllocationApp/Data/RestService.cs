@@ -15,8 +15,7 @@ namespace AllocationApp
 
         public RestService()
         {
-            httpClient = new HttpClient();
-            httpClient.MaxResponseContentBufferSize = 256000;
+            httpClient = new HttpClient {MaxResponseContentBufferSize = 256000};
             //httpClient.DefaultRequestHeaders.Add("httpClient")
             //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
         }
