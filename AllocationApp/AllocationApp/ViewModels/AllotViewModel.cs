@@ -21,6 +21,8 @@ namespace AllocationApp.ViewModels
         private string selectedMasterAwb = string.Empty;
         private string subNo = string.Empty;
 
+        private string summary = "已到货：{0}，未到货：{1}，溢装到货：{2}";
+
         public AllotViewModel()
         {
             LoadDataCommand = new Command(async () => await GetDataAsync(), () => !IsRunning);
@@ -55,6 +57,7 @@ namespace AllocationApp.ViewModels
                             App.Allocations.Remove(item);
                             Allots.Remove(item);
                         }
+                        OnPropertyChanged(nameof(Summary));
                         await Application.Current.MainPage.DisplayAlert("提示", "已经恢复至上一步", "确定");
                     }
                 }
@@ -186,6 +189,7 @@ namespace AllocationApp.ViewModels
                 }
                 //TODO: 需要找到扫码完成之后选中文本
                 SubNo = string.Empty;
+                OnPropertyChanged(nameof(Summary));
             }
             catch (Exception ex)
             {
@@ -216,6 +220,7 @@ namespace AllocationApp.ViewModels
             ScanedCount = 0;
             SelectedMasterAwb = string.Empty;
             MasterAwbs = allots.Distinct(p => p.MasterAwb).Select(p => p.MasterAwb).ToList();
+            OnPropertyChanged(nameof(Summary));
             await Application.Current.MainPage.DisplayAlert("提示", "获取数据成功", "确定");
         }
 
@@ -322,6 +327,7 @@ namespace AllocationApp.ViewModels
 
                     selectedMasterAwb = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(Summary));
                 }
             }
         }
@@ -349,6 +355,11 @@ namespace AllocationApp.ViewModels
                 }
             }
         }
+
+        public string Summary => string.Format(summary,
+          string.IsNullOrWhiteSpace(SelectedMasterAwb) ? App.Allocations.Count(p => p.IsChecked == StateKind.Checked) : App.Allocations.Count(p => p.IsChecked == StateKind.Checked && p.MasterAwb == SelectedMasterAwb),
+            string.IsNullOrWhiteSpace(SelectedMasterAwb) ? App.Allocations.Count(p => p.IsChecked == StateKind.NoChecked) : App.Allocations.Count(p => p.IsChecked == StateKind.NoChecked && p.MasterAwb == SelectedMasterAwb),
+            string.IsNullOrWhiteSpace(SelectedMasterAwb) ? App.Allocations.Count(p => p.IsChecked == StateKind.OverChecked) : App.Allocations.Count(p => p.IsChecked == StateKind.OverChecked && p.MasterAwb == SelectedMasterAwb));
 
         public ICommand LoadDataCommand { protected set; get; }
         public ICommand SubNoKeyEnterCommand { protected set; get; }

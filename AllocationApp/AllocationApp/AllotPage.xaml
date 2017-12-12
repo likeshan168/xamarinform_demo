@@ -90,6 +90,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Label Text="{Binding Summary}"></Label>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
