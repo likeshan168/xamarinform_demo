@@ -15,6 +15,8 @@ namespace AllocationApp
 		public LoginPage ()
 		{
 			InitializeComponent ();
+
+		    BindingContext = new LoginViewModel {Navigation = Navigation};
 		}
 
         private void PasswordEntry_Completed(object sender, EventArgs e)

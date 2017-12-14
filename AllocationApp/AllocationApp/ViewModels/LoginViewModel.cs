@@ -78,6 +78,8 @@ namespace AllocationApp
             }
         }
 
+        public INavigation Navigation { get; set; }
+
         public ICommand LoginCommand { protected set; get; }
 
         //async Task LoginAsync()
@@ -96,15 +98,13 @@ namespace AllocationApp
                     //await Application.Current.MainPage.DisplayAlert("Login", "Login Successfully", "OK");
                     App.IsUserLoggedIn = true;
                     //以下两行代码就是导航到主页
-                    //var currentPage = Application.Current.MainPage;
-                    //currentPage.Navigation.InsertPageBefore(new AllotPage(), currentPage);
-                    //await currentPage.Navigation.PopAsync();
-                    await Application.Current.MainPage.Navigation.PushAsync(new AllotPage());
+                    //Navigation.InsertPageBefore(new AllotPage(), Application.Current.MainPage);
+                    //await Navigation.PopAsync();
+                    await Navigation.PushAsync(new AllotPage());
                 }
                 else
                 {
                     Password = string.Empty;
-                    Message = "用户名或密码不对";
                 }
 
                 IsRunning = false;
@@ -125,10 +125,12 @@ namespace AllocationApp
             }
             //TODO: call web serivce to verify the user login
 
-            ServiceResponse response =
+            LoginResponse response =
                 await App.ServiceManager.LoginAsync(new User { UserName = UserName, Password = Password });
 
             Message = response.Result;
+            App.TenantId = response.TenantId;
+            App.IsAdmin = response.IsAdmin;
 
             return response.IsSuccess;
         }

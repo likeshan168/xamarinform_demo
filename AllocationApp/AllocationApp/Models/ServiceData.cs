@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Realms;
 
 namespace AllocationApp.Models
 {
-    public class AllocationData: RealmObject
+    public class ServiceData
     {
         public Int64 Id { get; set; }
         public int IsChecked { get; set; }
@@ -20,7 +19,5 @@ namespace AllocationApp.Models
         public String Description { get; set; }
 
         public int TenantId { get; set; }
-        public bool IsShow { get; set; }
-
     }
 }

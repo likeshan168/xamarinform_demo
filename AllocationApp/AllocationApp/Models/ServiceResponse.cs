@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace AllocationApp.Models
 {
-    public class LoginResponse : ServiceResponse
+    public class ServiceResponse
     {
-        public int TenantId { get; set; }
-        public bool IsAdmin { get; set; }
+        public string Result { get; set; }
+        public bool IsSuccess { get; set; }
     }
 }

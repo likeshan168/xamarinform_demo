@@ -8,20 +8,22 @@
              x:Class="AllocationApp.AllotPage"
              Title="盘点">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="退出" x:Name="SignOff" Clicked="SignOff_Clicked" />
+        <!--<ToolbarItem Text="退出" x:Name="SignOff" Clicked="SignOff_Clicked" />-->
+        <ToolbarItem Text="退出" x:Name="SignOff" Command="{Binding Logout}" />
     </ContentPage.ToolbarItems>
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <viewModels:AllotViewModel/>
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
     <ContentPage.Resources>
         <ResourceDictionary>
-            <allocationApp:StatekindBoolConverter x:Key="cvt"></allocationApp:StatekindBoolConverter>
+            <!--<allocationApp:StatekindBoolConverter x:Key="cvt"></allocationApp:StatekindBoolConverter>-->
+            <allocationApp:CheckedToBoolConverter x:Key="cvt"></allocationApp:CheckedToBoolConverter>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
             <ActivityIndicator IsRunning="{Binding IsUpdating}" IsVisible="{Binding IsUpdating}" Color="Red"/>
-            
+
             <StackLayout Orientation="Horizontal">
                 <Label Text="{Binding Count, StringFormat='下拉刷新，当前数据条数：{0}'}"></Label>
                 <Label Text="{Binding ScanedCount, StringFormat='已扫条数：{0}'}"></Label>
@@ -44,13 +46,13 @@
                     </Image.GestureRecognizers>
                 </Image>
             </StackLayout>
-            <Picker Title="选择主单号" ItemsSource="{Binding MasterAwbs}" SelectedItem="{Binding SelectedMasterAwb}"/>
+            <Picker Title="选择主单号" ItemsSource="{Binding MasterAwbs}" SelectedItem="{Binding SelectedMasterAwb}" ItemDisplayBinding="{Binding MasterAwb}"/>
             <controls:SelectableEntry Placeholder="扫分单号" Text="{Binding SubNo}">
                 <Entry.Behaviors>
                     <behaviors:EventToCommandBehavior EventName="Completed"  Command="{Binding SubNoKeyEnterCommand}"></behaviors:EventToCommandBehavior>
                 </Entry.Behaviors>
             </controls:SelectableEntry>
-            <ListView x:Name="list" SeparatorColor="Green" Margin="5" IsRefreshing="{Binding IsRunning}" ItemsSource="{Binding Allots}" IsPullToRefreshEnabled="True" RefreshCommand="{Binding LoadDataCommand}">
+            <ListView x:Name="list" SeparatorColor="Green" Margin="5" IsRefreshing="{Binding IsRunning}" ItemsSource="{Binding Entries}" IsPullToRefreshEnabled="True" RefreshCommand="{Binding LoadDataCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -90,7 +92,15 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label Text="{Binding Summary}"></Label>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Summary}"></Label>
+                <Image Source="clear.png">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding ClearAllData}"  />
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

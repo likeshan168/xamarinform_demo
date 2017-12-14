@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using AllocationApp.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,13 +15,7 @@ namespace AllocationApp
         public AllotPage()
         {
             InitializeComponent();
-        }
-
-        private async void SignOff_Clicked(object sender, EventArgs e)
-        {
-            App.IsUserLoggedIn = false;
-            Navigation.InsertPageBefore(new LoginPage(), this);
-            await Navigation.PopAsync();
+            BindingContext = new AllotViewModel { Navigation = Navigation };
         }
     }
 }

@@ -15,13 +15,13 @@ namespace AllocationApp
 
         public RestService()
         {
-            httpClient = new HttpClient {MaxResponseContentBufferSize = 256000};
+            httpClient = new HttpClient { MaxResponseContentBufferSize = 256000 };
             //httpClient.DefaultRequestHeaders.Add("httpClient")
             //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
         }
-        public async Task<ServiceResponse> LoginAsync(User user)
+        public async Task<LoginResponse> LoginAsync(User user)
         {
-            ServiceResponse serviceResponse = new ServiceResponse();
+            LoginResponse loginResponse = new LoginResponse();
             var uri = new Uri(string.Format(Constants.LoginUrl, string.Empty));
 
             try
@@ -31,39 +31,44 @@ namespace AllocationApp
                 var response = await httpClient.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    serviceResponse = await response.Content.ReadAsAsync<ServiceResponse>();
-                    //JavaScriptSerializer JSserializer = new JavaScriptSerializer();
-                    //loginResponse = JsonConvert.DeserializeObject<LoginResponse>(result);
+                    loginResponse = await response.Content.ReadAsAsync<LoginResponse>();
+                }
+                else
+                {
+                    loginResponse = await response.Content.ReadAsAsync<LoginResponse>();
                 }
 
-                return serviceResponse;
+                return loginResponse;
+            }
+            catch (HttpRequestException ex)
+            {
+                loginResponse.IsSuccess = false;
+                loginResponse.Result = "网络发生异常，请检查网络是否正常";
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Login Error:{ex.Message}");
-                serviceResponse.IsSuccess = false;
-                serviceResponse.Result = "登录发生异常";
-                return serviceResponse;
+                //Debug.WriteLine($"Login Error:{ex.Message}");
+                loginResponse.IsSuccess = false;
+                loginResponse.Result = "登录发生异常";
+
             }
+            return loginResponse;
         }
 
-        public async Task<List<AllocationData>> GetListAsync()
+        public async Task<GetListResponse<AllocationData>> GetListAsync()
         {
-            var list = new List<AllocationData>();
+            var list = new GetListResponse<AllocationData>();
             try
             {
                 var uri = new Uri(string.Format(Constants.LoginUrl, string.Empty));
                 var response = await httpClient.GetAsync(uri);
-                if (response.IsSuccessStatusCode)
-                {
-                    list = await response.Content.ReadAsAsync<List<AllocationData>>();
-                    return list;
-                }
-                return list;
+                return await response.Content.ReadAsAsync<GetListResponse<AllocationData>>();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Login Error:{ex.Message}");
+                list.IsSuccess = false;
+                list.Message = "解析服务器中的数据出现异常";
                 return list;
             }
         }
@@ -94,5 +99,6 @@ namespace AllocationApp
             }
         }
     }
+
 }
 ;
