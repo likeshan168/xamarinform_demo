@@ -9,15 +9,15 @@ using Xamarin.Forms.Xaml;
 
 namespace AllocationApp
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class LoginPage
-	{
-		public LoginPage ()
-		{
-			InitializeComponent ();
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class LoginPage
+    {
+        public LoginPage()
+        {
+            InitializeComponent();
 
-		    BindingContext = new LoginViewModel {Navigation = Navigation};
-		}
+            BindingContext = new LoginViewModel { Navigation = Navigation, LPage = this };
+        }
 
         private void PasswordEntry_Completed(object sender, EventArgs e)
         {

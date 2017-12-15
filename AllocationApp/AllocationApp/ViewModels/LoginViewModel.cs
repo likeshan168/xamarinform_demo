@@ -13,7 +13,7 @@ namespace AllocationApp
     public class LoginViewModel : ViewModelBase
     {
         private string message = string.Empty;
-        private bool isRunning = false;
+        private bool isRunning;
         private string userName = string.Empty;
         private string password = string.Empty;
         public LoginViewModel()
@@ -80,6 +80,8 @@ namespace AllocationApp
 
         public INavigation Navigation { get; set; }
 
+        public ContentPage LPage { get; set; }
+
         public ICommand LoginCommand { protected set; get; }
 
         //async Task LoginAsync()
@@ -98,9 +100,9 @@ namespace AllocationApp
                     //await Application.Current.MainPage.DisplayAlert("Login", "Login Successfully", "OK");
                     App.IsUserLoggedIn = true;
                     //以下两行代码就是导航到主页
-                    //Navigation.InsertPageBefore(new AllotPage(), Application.Current.MainPage);
-                    //await Navigation.PopAsync();
-                    await Navigation.PushAsync(new AllotPage());
+                    Navigation.InsertPageBefore(new AllotPage(), LPage);
+                    await Navigation.PopAsync();
+                    //await Navigation.PushAsync(new AllotPage(), true);
                 }
                 else
                 {

@@ -15,7 +15,7 @@ namespace AllocationApp
         public AllotPage()
         {
             InitializeComponent();
-            BindingContext = new AllotViewModel { Navigation = Navigation };
+            BindingContext = new AllotViewModel { Navigation = Navigation, APage = this };
         }
     }
 }

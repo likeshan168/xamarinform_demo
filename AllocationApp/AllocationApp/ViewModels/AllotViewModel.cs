@@ -128,13 +128,15 @@ namespace AllocationApp.ViewModels
                 if (await Application.Current.MainPage.DisplayAlert("提示", "还有数据未保存,确定退出吗", "确定", "取消"))
                 {
                     App.IsUserLoggedIn = false;
-                    await Navigation.PopAsync();
+                    Navigation.InsertPageBefore(new LoginPage(), APage);
+                    await Navigation.PopAsync(true);
                 }
             }
             else
             {
                 App.IsUserLoggedIn = false;
-                await Navigation.PopAsync();
+                Navigation.InsertPageBefore(new LoginPage(), APage);
+                await Navigation.PopAsync(true);
             }
         }
 
@@ -181,7 +183,7 @@ namespace AllocationApp.ViewModels
             }
 
             Count = Entries.Count();
-            MasterAwbs = _realm.All<AllocationData>().Where(p=>p.TenantId==App.TenantId).AsEnumerable().Distinct(new AllocationDataComparer()).ToList();
+            MasterAwbs = _realm.All<AllocationData>().Where(p => p.TenantId == App.TenantId).AsEnumerable().Distinct(new AllocationDataComparer()).ToList();
             OnPropertyChanged(nameof(Summary));
         }
 
@@ -526,6 +528,7 @@ namespace AllocationApp.ViewModels
 
         public IEnumerable<AllocationData> Entries { get; }
         public INavigation Navigation { get; set; }
+        public ContentPage APage { get; set; }
 
         public ICommand LoadDataCommand { protected set; get; }
         public ICommand SubNoKeyEnterCommand { protected set; get; }
