@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AllotPage.xaml.cs">
+    <Compile Include="Views\AllotPage.xaml.cs">
       <DependentUpon>AllotPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
@@ -43,7 +43,7 @@
     </Compile>
     <Compile Include="Behaviors\BehaviorBase.cs" />
     <Compile Include="Behaviors\EventToCommandBehavior.cs" />
-    <Compile Include="CallHistoryPage.xaml.cs">
+    <Compile Include="Examples\CallHistoryPage.xaml.cs">
       <DependentUpon>CallHistoryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
@@ -52,12 +52,12 @@
     <Compile Include="Helpers\AllocationDataComparer.cs" />
     <Compile Include="Helpers\CommonEqualityComparer.cs" />
     <Compile Include="Helpers\DistinctExtensions.cs" />
-    <Compile Include="IDialer.cs" />
+    <Compile Include="Examples\IDialer.cs" />
     <Compile Include="Data\IRestService.cs" />
-    <Compile Include="ListViewPage.xaml.cs">
+    <Compile Include="Examples\ListViewPage.xaml.cs">
       <DependentUpon>ListViewPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LoginPage.xaml.cs">
+    <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\AllocationData.cs" />
@@ -67,27 +67,27 @@
     <Compile Include="Models\ServiceResponse.cs" />
     <Compile Include="Models\StateKind.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="StatekindBoolConverter.cs" />
+    <Compile Include="Converters\StatekindBoolConverter.cs" />
     <Compile Include="ViewModels\AllotViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Examples\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Person.cs" />
-    <Compile Include="PhoneTranslator.cs" />
+    <Compile Include="Examples\Person.cs" />
+    <Compile Include="Examples\PhoneTranslator.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\RestService.cs" />
-    <Compile Include="SecondPage.xaml.cs">
+    <Compile Include="Examples\SecondPage.xaml.cs">
       <DependentUpon>SecondPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TabbedPage.xaml.cs">
+    <Compile Include="Examples\TabbedPage.xaml.cs">
       <DependentUpon>TabbedPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MainPage.xaml">
+    <EmbeddedResource Include="Examples\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -145,37 +145,37 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CallHistoryPage.xaml">
+    <EmbeddedResource Include="Examples\CallHistoryPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="SecondPage.xaml">
+    <EmbeddedResource Include="Examples\SecondPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TabbedPage.xaml">
+    <EmbeddedResource Include="Examples\TabbedPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ListViewPage.xaml">
+    <EmbeddedResource Include="Examples\ListViewPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LoginPage.xaml">
+    <EmbeddedResource Include="Views\LoginPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AllotPage.xaml">
+    <EmbeddedResource Include="Views\AllotPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
