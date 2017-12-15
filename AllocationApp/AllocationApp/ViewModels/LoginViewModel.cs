@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AllocationApp.Annotations;
 using AllocationApp.Models;
 using AllocationApp.ViewModels;
+using Realms;
 using Xamarin.Forms;
 
 namespace AllocationApp
@@ -16,9 +18,21 @@ namespace AllocationApp
         private bool isRunning;
         private string userName = string.Empty;
         private string password = string.Empty;
+        private bool rememberMe;
+        private Realm _realm;
         public LoginViewModel()
         {
             LoginCommand = new Command(async () => await ValidateLoginAsync(), () => !IsRunning);
+            var config = new RealmConfiguration { SchemaVersion = 1 };
+            _realm = Realm.GetInstance(config);
+
+            var user = _realm.All<User>().FirstOrDefault();
+            if (user != null)
+            {
+                UserName = user.UserName;
+                Password = user.Password;
+                RememberMe = true;
+            }
         }
 
         public string UserName
@@ -78,6 +92,16 @@ namespace AllocationApp
             }
         }
 
+        public bool RememberMe
+        {
+            get => rememberMe;
+            set
+            {
+                rememberMe = value;
+                OnPropertyChanged(nameof(RememberMe));
+            }
+        }
+
         public INavigation Navigation { get; set; }
 
         public ContentPage LPage { get; set; }
@@ -98,6 +122,23 @@ namespace AllocationApp
                 if (await AreCredentialsCorrectAsync())
                 {
                     //await Application.Current.MainPage.DisplayAlert("Login", "Login Successfully", "OK");
+                    //记录用户名和密码
+                    if (RememberMe)
+                    {
+                        _realm.Write(() =>
+                        {
+                            _realm.RemoveAll<User>();
+                            _realm.Add(new User {UserName = UserName, Password = Password});
+                        });
+                    }
+                    else
+                    {
+                        _realm.Write(() =>
+                        {
+                            _realm.RemoveAll<User>();
+                        });
+                    }
+
                     App.IsUserLoggedIn = true;
                     //以下两行代码就是导航到主页
                     Navigation.InsertPageBefore(new AllotPage(), LPage);

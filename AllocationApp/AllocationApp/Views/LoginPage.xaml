@@ -14,7 +14,13 @@
             <Label Text="{Binding Message}" TextColor="Red" FontSize="14"/>
             <Entry Text="{Binding UserName}" Placeholder="用户名"></Entry>
             <Entry Text="{Binding Password}"  Placeholder="密码" IsPassword="True" Completed="PasswordEntry_Completed"></Entry>
+
+            <StackLayout Orientation="Horizontal">
+                <Switch IsToggled="{Binding RememberMe}"/>
+                <Label Text="记住密码？"/>
+            </StackLayout>
             <Button x:Name="Login" Command="{Binding LoginCommand}" BackgroundColor="#3498DB" Text="登录"></Button>
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
