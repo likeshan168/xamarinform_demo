@@ -60,6 +60,7 @@
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\AllocationData.cs" />
+    <Compile Include="Models\ListResponse.cs" />
     <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\StateKind.cs" />
     <Compile Include="Models\User.cs" />

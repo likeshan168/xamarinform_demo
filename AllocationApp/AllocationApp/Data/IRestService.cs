@@ -11,7 +11,7 @@ namespace AllocationApp
     {
         Task<ServiceResponse> LoginAsync(User user);
 
-        Task<List<AllocationData>> GetListAsync();
+        Task<GetListResponse<AllocationData>> GetListAsync();
 
         Task<ServiceResponse> UpdateDataAsync(IList<AllocationData> allocations);
     }

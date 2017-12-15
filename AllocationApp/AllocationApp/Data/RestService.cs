@@ -15,7 +15,7 @@ namespace AllocationApp
 
         public RestService()
         {
-            httpClient = new HttpClient {MaxResponseContentBufferSize = 256000};
+            httpClient = new HttpClient { MaxResponseContentBufferSize = 256000 };
             //httpClient.DefaultRequestHeaders.Add("httpClient")
             //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
         }
@@ -47,24 +47,22 @@ namespace AllocationApp
             }
         }
 
-        public async Task<List<AllocationData>> GetListAsync()
+        public async Task<GetListResponse<AllocationData>> GetListAsync()
         {
-            var list = new List<AllocationData>();
+            var listResponse = new GetListResponse<AllocationData>();
             try
             {
                 var uri = new Uri(string.Format(Constants.LoginUrl, string.Empty));
                 var response = await httpClient.GetAsync(uri);
-                if (response.IsSuccessStatusCode)
-                {
-                    list = await response.Content.ReadAsAsync<List<AllocationData>>();
-                    return list;
-                }
-                return list;
+                listResponse = await response.Content.ReadAsAsync<GetListResponse<AllocationData>>();
+                
+                return listResponse;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Login Error:{ex.Message}");
-                return list;
+                listResponse.IsSuccess = false;
+                listResponse.Message = "解析数据出现异常";
+                return listResponse;
             }
         }
 

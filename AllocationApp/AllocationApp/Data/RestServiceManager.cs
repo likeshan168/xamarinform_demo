@@ -21,7 +21,7 @@ namespace AllocationApp
             return restService.LoginAsync(user);
         }
 
-        public Task<List<AllocationData>> GetListAsync()
+        public Task<GetListResponse<AllocationData>> GetListAsync()
         {
             return restService.GetListAsync();
         }

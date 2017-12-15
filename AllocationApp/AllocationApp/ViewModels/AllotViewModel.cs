@@ -210,7 +210,14 @@ namespace AllocationApp.ViewModels
                 }
             }
             IsRunning = true;
-            App.Allocations = await GetListAsync();
+            var response  = await GetListAsync();
+            if (!response.IsSuccess)
+            {
+                IsRunning = false;
+                await Application.Current.MainPage.DisplayAlert("提示", response.Message, "确定");
+                return;
+            }
+            App.Allocations = response.Entities.ToList();
             allots.Clear();
             foreach (var item in App.Allocations)
             {
@@ -226,7 +233,7 @@ namespace AllocationApp.ViewModels
             await Application.Current.MainPage.DisplayAlert("提示", "获取数据成功", "确定");
         }
 
-        private async Task<List<AllocationData>> GetListAsync()
+        private async Task<GetListResponse<AllocationData>> GetListAsync()
         {
             return await App.ServiceManager.GetListAsync();
         }

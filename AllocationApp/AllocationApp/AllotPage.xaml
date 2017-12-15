@@ -44,12 +44,14 @@
                     </Image.GestureRecognizers>
                 </Image>
             </StackLayout>
-            <Picker Title="选择主单号" ItemsSource="{Binding MasterAwbs}" SelectedItem="{Binding SelectedMasterAwb}"/>
-            <controls:SelectableEntry Placeholder="扫分单号" Text="{Binding SubNo}">
-                <Entry.Behaviors>
-                    <behaviors:EventToCommandBehavior EventName="Completed"  Command="{Binding SubNoKeyEnterCommand}"></behaviors:EventToCommandBehavior>
-                </Entry.Behaviors>
-            </controls:SelectableEntry>
+            <StackLayout Orientation="Horizontal">
+                <Picker Title="选择主单号" ItemsSource="{Binding MasterAwbs}"  HorizontalOptions="FillAndExpand" SelectedItem="{Binding SelectedMasterAwb}"/>
+                <controls:SelectableEntry Placeholder="扫分单号" Text="{Binding SubNo}" HorizontalOptions="FillAndExpand">
+                    <Entry.Behaviors>
+                        <behaviors:EventToCommandBehavior EventName="Completed"  Command="{Binding SubNoKeyEnterCommand}"></behaviors:EventToCommandBehavior>
+                    </Entry.Behaviors>
+                </controls:SelectableEntry>
+            </StackLayout>
             <ListView x:Name="list" SeparatorColor="Green" Margin="5" IsRefreshing="{Binding IsRunning}" ItemsSource="{Binding Allots}" IsPullToRefreshEnabled="True" RefreshCommand="{Binding LoadDataCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
