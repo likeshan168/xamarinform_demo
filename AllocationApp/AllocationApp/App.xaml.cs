@@ -45,8 +45,8 @@ namespace AllocationApp
             // Handle when your app starts
             //AppCenter.Start("android=70d8deae-b1cb-4e7e-a30a-2890540858b7;",
             //    typeof(Analytics), typeof(Crashes));
-          
-            //AppCenter.Start("android=70d8deae-b1cb-4e7e-a30a-2890540858b7", typeof(Distribute));
+
+            AppCenter.Start("android=70d8deae-b1cb-4e7e-a30a-2890540858b7", typeof(Distribute));
         }
 
         protected override void OnSleep()
