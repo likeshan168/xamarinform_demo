@@ -129,8 +129,10 @@ namespace AllocationApp.ViewModels
                 if (string.IsNullOrWhiteSpace(SubNo))
                     return;
                 if (string.IsNullOrWhiteSpace(SelectedMasterAwb))
+                {
                     await Application.Current.MainPage.DisplayAlert("提示", "选择主单号", "确定");
-
+                    return;
+                }
                 var rst = App.Allocations.Where(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo);
                 var enumerable = rst as AllocationData[] ?? rst.ToArray();
                 if (enumerable.Any())
