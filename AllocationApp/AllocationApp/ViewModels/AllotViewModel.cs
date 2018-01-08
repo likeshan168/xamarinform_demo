@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AllocationApp.Helpers;
@@ -246,6 +248,10 @@ namespace AllocationApp.ViewModels
                 else
                 {
                     //新增
+                    var stream = GetStreamFromFile("yizhuang.mp3");
+                    var player = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+                    player.Load(stream);
+                    player.Play();
                     if (await Application.Current.MainPage.DisplayAlert("提示", "是否标记为溢装到货", "确定", "取消"))
                     {
                         Allots.Clear();
@@ -268,13 +274,22 @@ namespace AllocationApp.ViewModels
                     }
                 }
                 //TODO: 需要找到扫码完成之后选中文本
-                SubNo = string.Empty;
+                //SubNo = string.Empty;
                 OnPropertyChanged(nameof(Summary));
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("提示", $"盘点出错:{ex.Message}", "确定");
             }
+        }
+
+        Stream GetStreamFromFile(string filename)
+        {
+            var assembly = typeof(App).GetTypeInfo().Assembly;
+
+            var stream = assembly.GetManifestResourceStream("AllocationApp." + filename);
+
+            return stream;
         }
 
         private async Task GetDataAsync()
