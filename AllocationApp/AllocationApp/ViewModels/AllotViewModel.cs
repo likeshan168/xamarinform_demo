@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AllocationApp.Helpers;
 using AllocationApp.Models;
+using Plugin.MediaManager;
 using Xamarin.Forms;
 
 namespace AllocationApp.ViewModels
@@ -172,6 +175,8 @@ namespace AllocationApp.ViewModels
                 else
                 {
                     //新增
+                    //http://101.201.28.235:91/version/nodata.wav
+                    await CrossMediaManager.Current.Play("http://101.201.28.235:91/version/nodata.wav");
                     if (await Application.Current.MainPage.DisplayAlert("提示", "是否标记为溢装到货", "确定", "取消"))
                     {
                         Allots.Clear();
@@ -190,7 +195,7 @@ namespace AllocationApp.ViewModels
                     }
                 }
                 //TODO: 需要找到扫码完成之后选中文本
-                SubNo = string.Empty;
+                //SubNo = string.Empty;
                 OnPropertyChanged(nameof(Summary));
             }
             catch (Exception ex)
@@ -210,7 +215,7 @@ namespace AllocationApp.ViewModels
                 }
             }
             IsRunning = true;
-            var response  = await GetListAsync();
+            var response = await GetListAsync();
             if (!response.IsSuccess)
             {
                 IsRunning = false;
