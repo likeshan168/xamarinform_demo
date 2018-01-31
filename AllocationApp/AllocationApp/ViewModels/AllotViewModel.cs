@@ -241,6 +241,10 @@ namespace AllocationApp.ViewModels
                         {
                             App.CheckedAllocations.Push(rst);
                         }
+                        var stream = GetStreamFromFile("ok.mp3");
+                        var player = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+                        player.Load(stream);
+                        player.Play();
                         ScanedCount = ScanedCount + 1;
                         Count = Entries.Count();
                     }
