@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AllocationApp.Annotations;
 using AllocationApp.Models;
 using AllocationApp.ViewModels;
+using Realms;
 using Xamarin.Forms;
 
 namespace AllocationApp
@@ -16,9 +18,20 @@ namespace AllocationApp
         private bool isRunning = false;
         private string userName = string.Empty;
         private string password = string.Empty;
+        private bool rememberMe;
+        private Realm _realm;
         public LoginViewModel()
         {
             LoginCommand = new Command(async () => await ValidateLoginAsync(), () => !IsRunning);
+            var config = new RealmConfiguration { SchemaVersion = 1 };
+            _realm = Realm.GetInstance(config);
+            var user = _realm.All<User>().FirstOrDefault();
+            if (user != null)
+            {
+                UserName = user.UserName;
+                Password = user.Password;
+                RememberMe = true;
+            }
         }
 
         public string UserName
@@ -75,6 +88,16 @@ namespace AllocationApp
                     ((Command)LoginCommand).ChangeCanExecute();
                 }
 
+            }
+        }
+
+        public bool RememberMe
+        {
+            get => rememberMe;
+            set
+            {
+                rememberMe = value;
+                OnPropertyChanged(nameof(RememberMe));
             }
         }
 

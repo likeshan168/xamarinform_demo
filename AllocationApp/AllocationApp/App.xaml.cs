@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AllocationApp.Models;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Distribute;
+using Realms;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -21,6 +23,7 @@ namespace AllocationApp
         public static IList<AllocationData> Allocations = new List<AllocationData>();
         //这个是保存盘点过的数据（包括存在的和不存在的）,这个是用来同步到服务器
         public static Stack<AllocationData> CheckedAllocations = new Stack<AllocationData>();
+        private Realm _realm;
         public App()
         {
             InitializeComponent();
@@ -33,6 +36,24 @@ namespace AllocationApp
             else
             {
                 MainPage = new NavigationPage(new LoginPage());
+            }
+
+            var config = new RealmConfiguration { SchemaVersion = 1 };
+            _realm = Realm.GetInstance(config);
+            var notUpdatedItems = _realm.All<AllocationData2>().ToList();
+            CheckedAllocations.Clear();
+            if (notUpdatedItems != null && notUpdatedItems.Count != 0)
+            {
+                foreach (var item in notUpdatedItems)
+                {
+                    CheckedAllocations.Push(new AllocationData
+                    {
+                        Amount = item.Amount,
+                        IsChecked = (StateKind)item.IsChecked,
+                        MasterAwb = item.MasterAwb,
+                        SubAwb = item.SubAwb
+                    });
+                }
             }
             //MainPage = new TabbedPage();
         }

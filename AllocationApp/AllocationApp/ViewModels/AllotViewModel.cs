@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AllocationApp.Helpers;
 using AllocationApp.Models;
 using Plugin.MediaManager;
+using Realms;
 using Xamarin.Forms;
 
 namespace AllocationApp.ViewModels
@@ -25,6 +26,7 @@ namespace AllocationApp.ViewModels
         private string subNo = string.Empty;
 
         private string summary = "已到货：{0}，未到货：{1}，溢装到货：{2}";
+        private Realm _realm;
 
         public AllotViewModel()
         {
@@ -34,6 +36,9 @@ namespace AllocationApp.ViewModels
             UpdateData = new Command(async () => await UpdateDataAsync());
             ResetData = new Command(async () => await ResetDataAsync());
             Logout = new Command(async () => await LogoutAsync());
+            var config = new RealmConfiguration { SchemaVersion = 1 };
+            _realm = Realm.GetInstance(config);
+            ScanedCount = App.CheckedAllocations.Count;
         }
 
         private async Task ResetDataAsync()
@@ -54,11 +59,30 @@ namespace AllocationApp.ViewModels
                                 .IsChecked = StateKind.NoChecked;
                             Allots.First(p => p.MasterAwb == item.MasterAwb && p.SubAwb == item.SubAwb)
                                 .IsChecked = StateKind.NoChecked;
+
+                            //更新本地数据库中的数据
+                            _realm.Write(() =>
+                            {
+                                var existedItem = _realm.All<AllocationData2>().FirstOrDefault(p => p.MasterAwb == item.MasterAwb && p.SubAwb == item.SubAwb);
+                                if (existedItem != null)
+                                {
+                                    existedItem.IsChecked = 1;
+                                }
+                            });
                         }
                         else if (item.IsChecked == StateKind.OverChecked)
                         {
                             App.Allocations.Remove(item);
                             Allots.Remove(item);
+                            //删除本地数据当中的数据
+                            _realm.Write(() =>
+                            {
+                                var existedItem = _realm.All<AllocationData2>().FirstOrDefault(p => p.MasterAwb == item.MasterAwb && p.SubAwb == item.SubAwb);
+                                if (existedItem != null)
+                                {
+                                    _realm.Remove(existedItem);
+                                }
+                            });
                         }
                         OnPropertyChanged(nameof(Summary));
                         await Application.Current.MainPage.DisplayAlert("提示", "已经恢复至上一步", "确定");
@@ -100,6 +124,11 @@ namespace AllocationApp.ViewModels
                 ScanedCount = 0;
                 App.CheckedAllocations.Clear();
                 SelectedMasterAwb = string.Empty;
+                //清空本地数据库
+                _realm.Write(() =>
+                {
+                    _realm.RemoveAll<AllocationData2>();
+                });
             }
             IsUpdating = false;
             await Application.Current.MainPage.DisplayAlert("提示", response.Result, "确定");
@@ -167,6 +196,31 @@ namespace AllocationApp.ViewModels
                         {
                             App.CheckedAllocations.Push(firstItem);
                         }
+                        //这个是持久化保存，就是防止手持设备突然退出时候，数据能够备份
+                        _realm.Write(() =>
+                        {
+                            var first = _realm.All<AllocationData2>().FirstOrDefault(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo);
+                            if (first != null)
+                            {
+                                first.IsChecked = 2;
+                            }
+                            else
+                            {
+                                _realm.Add(new AllocationData2
+                                {
+                                    Amount = firstItem.Amount,
+                                    IsChecked = (int)firstItem.IsChecked,
+                                    MasterAwb = firstItem.MasterAwb,
+                                    SubAwb = firstItem.SubAwb,
+                                });
+                            }
+                        });
+
+                        var stream = GetStreamFromFile("ok.mp3");
+                        var player = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+                        player.Load(stream);
+                        player.Play();
+
                         Allots.Add(firstItem);
                         ScanedCount = ScanedCount + 1;
                         Count = Allots.Count;
@@ -175,6 +229,10 @@ namespace AllocationApp.ViewModels
                 else
                 {
                     //新增
+                    var stream = GetStreamFromFile("yizhuang.mp3");
+                    var player = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+                    player.Load(stream);
+                    player.Play();
                     //http://101.201.28.235:91/version/nodata.wav
                     await CrossMediaManager.Current.Play("http://101.201.28.235:91/version/nodata.wav");
                     if (await Application.Current.MainPage.DisplayAlert("提示", "是否标记为溢装到货", "确定", "取消"))
@@ -192,10 +250,22 @@ namespace AllocationApp.ViewModels
                         App.Allocations.Add(newItem);
                         App.CheckedAllocations.Push(newItem);
                         ScanedCount = ScanedCount + 1;
+                        //添加到本地数据库
+                        _realm.Write(() =>
+                        {
+                            _realm.Add(new AllocationData2
+                            {
+                                Amount = 1,
+                                IsChecked = 3,
+                                MasterAwb = SelectedMasterAwb,
+                                SubAwb = SubNo,
+                            });
+
+                        });
                     }
                 }
                 //TODO: 需要找到扫码完成之后选中文本
-                //SubNo = string.Empty;
+                SubNo = string.Empty;
                 OnPropertyChanged(nameof(Summary));
             }
             catch (Exception ex)
@@ -204,6 +274,14 @@ namespace AllocationApp.ViewModels
             }
         }
 
+        Stream GetStreamFromFile(string filename)
+        {
+            var assembly = typeof(App).GetTypeInfo().Assembly;
+
+            var stream = assembly.GetManifestResourceStream("AllocationApp." + filename);
+
+            return stream;
+        }
         private async Task GetDataAsync()
         {
             if (ScanedCount > 0)
@@ -235,6 +313,11 @@ namespace AllocationApp.ViewModels
             SelectedMasterAwb = string.Empty;
             MasterAwbs = allots.Distinct(p => p.MasterAwb).Select(p => p.MasterAwb).ToList();
             OnPropertyChanged(nameof(Summary));
+
+            //清理掉缓存和本地数据库库中的数据
+            App.CheckedAllocations.Clear();
+            _realm.Write(() => _realm.RemoveAll<AllocationData2>());
+
             await Application.Current.MainPage.DisplayAlert("提示", "获取数据成功", "确定");
         }
 

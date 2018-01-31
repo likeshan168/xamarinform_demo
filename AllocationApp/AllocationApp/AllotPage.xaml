@@ -59,9 +59,9 @@
                             <StackLayout BackgroundColor="#eee" Orientation="Horizontal">
                                 <Image VerticalOptions="Start" Source="{Binding IsChecked, Converter={StaticResource cvt}}">
                                 </Image>
-                                <Label Text="{Binding SubAwb, StringFormat='分运单号：{0}'}"></Label>
-                                <Label Text="{Binding Description,StringFormat='品名：{0}'}"></Label>
-                                <Label Text="{Binding Amount, StringFormat='数量：{0}'}"></Label>
+                                <Label Text="{Binding SubAwb, StringFormat='分单号：{0}'}"></Label>
+                                <!--<Label Text="{Binding Description,StringFormat='品名：{0}'}"></Label>
+                                <Label Text="{Binding Amount, StringFormat='数量：{0}'}"></Label>-->
                                 <!--<StackLayout Orientation="Vertical">
                                     <Image Source="{Binding IsChecked, Converter={StaticResource cvt}}">
                                     </Image>
