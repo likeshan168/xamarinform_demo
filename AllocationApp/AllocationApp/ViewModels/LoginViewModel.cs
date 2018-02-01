@@ -116,6 +116,22 @@ namespace AllocationApp
                 //await Task.Delay(4000);
                 if (await AreCredentialsCorrectAsync())
                 {
+                    if (RememberMe)
+                    {
+                        _realm.Write(() =>
+                        {
+                            _realm.RemoveAll<User>();
+                            _realm.Add(new User { UserName = UserName, Password = Password });
+                        });
+                    }
+                    else
+                    {
+                        _realm.Write(() =>
+                        {
+                            _realm.RemoveAll<User>();
+                        });
+                    }
+
                     //await Application.Current.MainPage.DisplayAlert("Login", "Login Successfully", "OK");
                     App.IsUserLoggedIn = true;
                     //以下两行代码就是导航到主页

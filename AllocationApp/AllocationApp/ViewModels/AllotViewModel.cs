@@ -265,7 +265,7 @@ namespace AllocationApp.ViewModels
                     }
                 }
                 //TODO: 需要找到扫码完成之后选中文本
-                SubNo = string.Empty;
+                //SubNo = string.Empty;
                 OnPropertyChanged(nameof(Summary));
             }
             catch (Exception ex)
