@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AllocationApp.Helpers;
 using AllocationApp.Models;
 using Plugin.MediaManager;
+using Plugin.SimpleAudioPlayer.Abstractions;
 using Realms;
 using Xamarin.Forms;
 
@@ -27,7 +28,10 @@ namespace AllocationApp.ViewModels
 
         private string summary = "已到货：{0}，未到货：{1}，溢装到货：{2}";
         private Realm _realm;
-
+        ISimpleAudioPlayer okPlayer;
+        ISimpleAudioPlayer yizhuangPlayer;
+        Stream ok;
+        Stream yizhuang;
         public AllotViewModel()
         {
             LoadDataCommand = new Command(async () => await GetDataAsync(), () => !IsRunning);
@@ -39,6 +43,12 @@ namespace AllocationApp.ViewModels
             var config = new RealmConfiguration { SchemaVersion = 1 };
             _realm = Realm.GetInstance(config);
             ScanedCount = App.CheckedAllocations.Count;
+            okPlayer = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+            yizhuangPlayer = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+            ok = GetStreamFromFile("ok.mp3");
+            yizhuang = GetStreamFromFile("yizhuang.mp3");
+            okPlayer.Load(ok);
+            yizhuangPlayer.Load(yizhuang);
         }
 
         private async Task ResetDataAsync()
@@ -216,10 +226,7 @@ namespace AllocationApp.ViewModels
                             }
                         });
 
-                        var stream = GetStreamFromFile("ok.mp3");
-                        var player = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
-                        player.Load(stream);
-                        player.Play();
+                        okPlayer.Play();
 
                         Allots.Add(firstItem);
                         ScanedCount = ScanedCount + 1;
@@ -229,10 +236,7 @@ namespace AllocationApp.ViewModels
                 else
                 {
                     //新增
-                    var stream = GetStreamFromFile("yizhuang.mp3");
-                    var player = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
-                    player.Load(stream);
-                    player.Play();
+                    yizhuangPlayer.Play();
                     //http://101.201.28.235:91/version/nodata.wav
                     await CrossMediaManager.Current.Play("http://101.201.28.235:91/version/nodata.wav");
                     if (await Application.Current.MainPage.DisplayAlert("提示", "是否标记为溢装到货", "确定", "取消"))
@@ -265,7 +269,7 @@ namespace AllocationApp.ViewModels
                     }
                 }
                 //TODO: 需要找到扫码完成之后选中文本
-                //SubNo = string.Empty;
+                SubNo = string.Empty;
                 OnPropertyChanged(nameof(Summary));
             }
             catch (Exception ex)
