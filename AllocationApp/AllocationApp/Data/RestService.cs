@@ -53,6 +53,7 @@ namespace AllocationApp
             try
             {
                 var uri = new Uri(string.Format(Constants.LoginUrl, string.Empty));
+                httpClient.MaxResponseContentBufferSize = 25600000000;
                 var response = await httpClient.GetAsync(uri);
                 listResponse = await response.Content.ReadAsAsync<GetListResponse<AllocationData>>();
                 
