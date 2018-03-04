@@ -38,7 +38,7 @@ namespace AllocationApp
                 MainPage = new NavigationPage(new LoginPage());
             }
 
-            var config = new RealmConfiguration { SchemaVersion = 1 };
+            var config = new RealmConfiguration { SchemaVersion = 2 };
             _realm = Realm.GetInstance(config);
             var notUpdatedItems = _realm.All<AllocationData2>().ToList();
             CheckedAllocations.Clear();

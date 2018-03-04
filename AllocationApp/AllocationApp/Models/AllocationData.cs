@@ -18,7 +18,7 @@ namespace AllocationApp.Models
         public Int32 Amount { get; set; }
         public Double Weight { get; set; }
         public String Description { get; set; }
-
+        public String Status { get; set; }
         public int TenantId { get; set; }
     }
 
@@ -33,6 +33,7 @@ namespace AllocationApp.Models
         public Int32 Amount { get; set; }
         public Double Weight { get; set; }
         public String Description { get; set; }
+        public String Status { get; set; }
 
         public int TenantId { get; set; }
     }

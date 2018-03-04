@@ -30,8 +30,10 @@ namespace AllocationApp.ViewModels
         private Realm _realm;
         ISimpleAudioPlayer okPlayer;
         ISimpleAudioPlayer yizhuangPlayer;
+        ISimpleAudioPlayer chayanPlayer;
         Stream ok;
         Stream yizhuang;
+        Stream chayan;
         public AllotViewModel()
         {
             LoadDataCommand = new Command(async () => await GetDataAsync(), () => !IsRunning);
@@ -40,15 +42,18 @@ namespace AllocationApp.ViewModels
             UpdateData = new Command(async () => await UpdateDataAsync());
             ResetData = new Command(async () => await ResetDataAsync());
             Logout = new Command(async () => await LogoutAsync());
-            var config = new RealmConfiguration { SchemaVersion = 1 };
+            var config = new RealmConfiguration { SchemaVersion = 2 };
             _realm = Realm.GetInstance(config);
             ScanedCount = App.CheckedAllocations.Count;
             okPlayer = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
             yizhuangPlayer = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+            chayanPlayer = Plugin.SimpleAudioPlayer.CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
             ok = GetStreamFromFile("ok.mp3");
             yizhuang = GetStreamFromFile("yizhuang.mp3");
+            chayan = GetStreamFromFile("chayan.mp3");
             okPlayer.Load(ok);
             yizhuangPlayer.Load(yizhuang);
+            chayanPlayer.Load(chayan);
         }
 
         private async Task ResetDataAsync()
@@ -226,7 +231,15 @@ namespace AllocationApp.ViewModels
                             }
                         });
 
-                        okPlayer.Play();
+                        //判断是否需要查验
+                        if (firstItem.Status.Contains("查验"))
+                        {
+                            chayanPlayer.Play();
+                        }
+                        else
+                        {
+                            okPlayer.Play();
+                        }
 
                         Allots.Add(firstItem);
                         ScanedCount = ScanedCount + 1;
@@ -238,7 +251,7 @@ namespace AllocationApp.ViewModels
                     //新增
                     yizhuangPlayer.Play();
                     //http://101.201.28.235:91/version/nodata.wav
-                    await CrossMediaManager.Current.Play("http://101.201.28.235:91/version/nodata.wav");
+                    //await CrossMediaManager.Current.Play("http://101.201.28.235:91/version/nodata.wav");
                     if (await Application.Current.MainPage.DisplayAlert("提示", "是否标记为溢装到货", "确定", "取消"))
                     {
                         Allots.Clear();

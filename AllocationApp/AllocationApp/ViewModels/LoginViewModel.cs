@@ -23,7 +23,7 @@ namespace AllocationApp
         public LoginViewModel()
         {
             LoginCommand = new Command(async () => await ValidateLoginAsync(), () => !IsRunning);
-            var config = new RealmConfiguration { SchemaVersion = 1 };
+            var config = new RealmConfiguration { SchemaVersion = 2 };
             _realm = Realm.GetInstance(config);
             var user = _realm.All<User>().FirstOrDefault();
             if (user != null)
