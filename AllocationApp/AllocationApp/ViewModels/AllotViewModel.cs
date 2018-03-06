@@ -232,7 +232,7 @@ namespace AllocationApp.ViewModels
                         });
 
                         //判断是否需要查验
-                        if (firstItem.Status.Contains("查验"))
+                        if (!string.IsNullOrWhiteSpace(firstItem.Status) && firstItem.Status.Contains("查验"))
                         {
                             chayanPlayer.Play();
                         }
