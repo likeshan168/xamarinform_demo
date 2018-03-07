@@ -180,7 +180,7 @@ namespace AllocationApp.ViewModels
                     await Application.Current.MainPage.DisplayAlert("提示", "选择主单号", "确定");
                     return;
                 }
-                var rst = App.Allocations.Where(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo);
+                var rst = App.Allocations.Where(p => p.MasterAwb == SelectedMasterAwb && p.SubAwb == SubNo.TrimEnd());
                 var enumerable = rst as AllocationData[] ?? rst.ToArray();
                 if (enumerable.Any())
                 {
